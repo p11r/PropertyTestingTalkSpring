@@ -30,6 +30,7 @@ class ExampleTest {
         assertThat(reversed[0]).isEqualTo(list[list.size - 1])
         assertThat(reversed[list.size - 1]).isEqualTo(list[0])
     }
+
     @Property
     @Disabled
     fun `test square`(@ForAll @Positive a: Int) {
