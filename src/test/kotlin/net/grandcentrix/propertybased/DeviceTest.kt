@@ -2,6 +2,7 @@ package net.grandcentrix.propertybased
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.fasterxml.jackson.databind.ObjectMapper
 import net.grandcentrix.propertybased.device.DeviceDto
 import net.grandcentrix.propertybased.device.DeviceMapper
 import net.jqwik.api.Arbitraries
@@ -19,11 +20,46 @@ import java.util.*
 class DeviceTest {
 
     @Test
+    fun `test json deserialisation`() {
+        val deviceDto = DeviceDto(
+            id = UUID.randomUUID(),
+            name = "Test Device",
+            value = 9223372036854775807
+        )
+        val json = """
+            {
+                "id": "${deviceDto.id}",
+                "name": "${deviceDto.name}",
+                "value": ${deviceDto.value}
+            }
+        """
+
+        val resultDeviceDto = ObjectMapper().readValue(json, DeviceDto::class.java)
+
+        assertThat(resultDeviceDto).isEqualTo(deviceDto)
+    }
+
+    @Property(tries = 100000)
+    fun `property test json deserialisation`(@ForAll("randomDeviceDto") deviceDto: DeviceDto) {
+        val json = """
+            {
+                "id": "${deviceDto.id}",
+                "name": "${deviceDto.name}",
+                "value": ${deviceDto.value}
+            }
+        """
+
+        val resultDeviceDto = ObjectMapper().readValue(json, DeviceDto::class.java)
+
+        assertThat(resultDeviceDto).isEqualTo(deviceDto)
+    }
+
+    @Test
     fun `round trip for mapping dto down to entity and back`() {
         val deviceDto = DeviceDto(
             id = UUID.randomUUID(),
-            name = "Test Device"
-
+            name = "Test Device",
+            value = 42
         )
         val resultDeviceDto = deviceDto
             .let { DeviceMapper().toModel(it) }
@@ -33,23 +69,23 @@ class DeviceTest {
     }
 
     @Provide
+    @Suppress("NAME_SHADOWING")
     fun randomDeviceDto(): Arbitrary<DeviceDto>  {
         val uuid = Arbitraries.strings().map { UUID.randomUUID() }
         val name = Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(100)
+        val value = Arbitraries.longs()
 
-        return combine(uuid, name) { uuid, name ->
-            DeviceDto(uuid, name)
+        return combine(uuid, name, value) { uuid, name, value ->
+            DeviceDto(uuid, name, value)
         }
     }
 
-    @Property(tries = 100)
+    @Property(tries = 10000)
     fun `round trip for mapping dto down to entity and back as pbt`(@ForAll("randomDeviceDto") deviceDto: DeviceDto) {
         val resultDeviceDto = deviceDto
             .let { DeviceMapper().toModel(it) }
             .let { DeviceMapper().toDto(it) }
 
-        print(deviceDto)
-        
         assertThat(resultDeviceDto).isEqualTo(deviceDto)
     }
 

@@ -4,5 +4,6 @@ import java.util.UUID
 
 data class Device(
     var id: UUID,
-    var name: String
+    var name: String,
+    var value: Long
 )
