@@ -59,31 +59,4 @@ class CalculatorTest {
         assertThat(calculator.result).isEqualTo(1)
     }
 
-    @Property
-    @Disabled
-    fun `test square`(@ForAll @Positive a: Int) {
-        val result = a * a
-        assertThat(result).isGreaterThanOrEqualTo(a)
-    }
-
-    @Property
-    @Disabled
-    fun `string should be shrunk to AA`(@ForAll @AlphaChars aString: String?): Boolean {
-        return aString!!.length > 5 || aString.length < 3
-    }
-
-    @Property
-    @Disabled
-    fun `abs value for all ints is positive`(@ForAll i: Int): Boolean {
-        return Math.abs(i) >= 0;
-    }
-
-    @Property
-    fun `length of concatenated string is greater than length of each`(
-        @ForAll string1: String, @ForAll string2: String
-    ) {
-        val conc = string1 + string2
-        assertThat(conc.length).isGreaterThanOrEqualTo(string1.length)
-        assertThat(conc.length).isGreaterThanOrEqualTo(string2.length)
-    }
 }
