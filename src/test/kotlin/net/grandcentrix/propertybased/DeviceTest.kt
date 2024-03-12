@@ -19,6 +19,14 @@ import java.util.*
 
 class DeviceTest {
 
+    private fun getDeviceDtoJson(uuid: UUID, name: String, value: Long) = """
+        {
+            "id": "$uuid",
+            "name": "$name",
+            "value": $value
+        }
+    """
+
     @Test
     fun `test json deserialisation`() {
         val deviceDto = DeviceDto(
@@ -26,29 +34,15 @@ class DeviceTest {
             name = "Test Device",
             value = 9223372036854775807
         )
-        val json = """
-            {
-                "id": "${deviceDto.id}",
-                "name": "${deviceDto.name}",
-                "value": ${deviceDto.value}
-            }
-        """
-
+        val json = getDeviceDtoJson(deviceDto.id, deviceDto.name, deviceDto.value)
         val resultDeviceDto = ObjectMapper().readValue(json, DeviceDto::class.java)
 
         assertThat(resultDeviceDto).isEqualTo(deviceDto)
     }
 
-    @Property(tries = 100000)
+    @Property(tries = 500000)
     fun `property test json deserialisation`(@ForAll("randomDeviceDto") deviceDto: DeviceDto) {
-        val json = """
-            {
-                "id": "${deviceDto.id}",
-                "name": "${deviceDto.name}",
-                "value": ${deviceDto.value}
-            }
-        """
-
+        val json = getDeviceDtoJson(deviceDto.id, deviceDto.name, deviceDto.value)
         val resultDeviceDto = ObjectMapper().readValue(json, DeviceDto::class.java)
 
         assertThat(resultDeviceDto).isEqualTo(deviceDto)

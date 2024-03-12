@@ -5,6 +5,8 @@ import assertk.assertions.containsAtLeast
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isGreaterThanOrEqualTo
+import com.fasterxml.jackson.databind.ObjectMapper
+import net.grandcentrix.propertybased.device.DeviceDto
 import net.jqwik.api.Disabled
 import net.jqwik.api.ForAll
 import net.jqwik.api.Property
