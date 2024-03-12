@@ -2,10 +2,12 @@ package net.grandcentrix.propertybased;
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThan
 import com.fasterxml.jackson.databind.ObjectMapper
 import net.jqwik.api.ForAll
 import net.jqwik.api.Property
 import org.junit.jupiter.api.Test;
+
 
 class PropertyTest {
 
@@ -49,9 +51,13 @@ class PropertyTest {
             .isEqualTo(sortedTwice)
     }
 
-    @Test
-    fun `induction`() {
-        // […]
+    @Property
+    fun `induction`(@ForAll list: List<Int>) {
+        val clone = list.toMutableList()
+        clone.add(10)
+
+        // adding an element to a list should increase its size
+        assertThat(clone.size).isGreaterThan(list.size)
     }
 
     @Test
