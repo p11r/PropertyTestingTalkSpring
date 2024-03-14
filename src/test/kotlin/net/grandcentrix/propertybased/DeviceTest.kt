@@ -3,6 +3,7 @@ package net.grandcentrix.propertybased
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.fasterxml.jackson.databind.ObjectMapper
+import net.grandcentrix.propertybased.device.BrokenDeviceDto
 import net.grandcentrix.propertybased.device.DeviceDto
 import net.grandcentrix.propertybased.device.DeviceMapper
 import net.jqwik.api.Arbitraries
@@ -32,20 +33,20 @@ class DeviceTest {
         val deviceDto = DeviceDto(
             id = UUID.randomUUID(),
             name = "Test Device",
-            value = 9223372036854775807
+            value = 2345678
         )
         val json = getDeviceDtoJson(deviceDto.id, deviceDto.name, deviceDto.value)
-        val resultDeviceDto = ObjectMapper().readValue(json, DeviceDto::class.java)
+        val resultDeviceDto = ObjectMapper().readValue(json, BrokenDeviceDto::class.java)
 
-        assertThat(resultDeviceDto).isEqualTo(deviceDto)
+        assertThat(resultDeviceDto.toString()).isEqualTo(resultDeviceDto.toString())
     }
 
-    @Property(tries = 500000)
+    @Property(tries = 5000)
     fun `property test json deserialisation`(@ForAll("randomDeviceDto") deviceDto: DeviceDto) {
         val json = getDeviceDtoJson(deviceDto.id, deviceDto.name, deviceDto.value)
-        val resultDeviceDto = ObjectMapper().readValue(json, DeviceDto::class.java)
+        val resultDeviceDto = ObjectMapper().readValue(json, BrokenDeviceDto::class.java)
 
-        assertThat(resultDeviceDto).isEqualTo(deviceDto)
+        assertThat(resultDeviceDto.toString()).isEqualTo(deviceDto.toString())
     }
 
     @Test

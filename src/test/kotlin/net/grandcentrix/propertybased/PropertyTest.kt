@@ -3,9 +3,12 @@ package net.grandcentrix.propertybased;
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
+import assertk.assertions.isGreaterThanOrEqualTo
 import com.fasterxml.jackson.databind.ObjectMapper
 import net.jqwik.api.ForAll
 import net.jqwik.api.Property
+import net.jqwik.api.ShrinkingMode
+import net.jqwik.api.constraints.Positive
 import org.junit.jupiter.api.Test;
 
 
@@ -16,7 +19,7 @@ class PropertyTest {
         val serialized = ObjectMapper().writeValueAsString(list)
         val deserialized = ObjectMapper().readValue(serialized, List::class.java)
 
-        //
+        // serializing then deserializing should have no effect
         assertThat(deserialized).isEqualTo(list)
     }
 
@@ -60,6 +63,15 @@ class PropertyTest {
         assertThat(clone.size).isGreaterThan(list.size)
     }
 
+    @Property(shrinking = ShrinkingMode.FULL)
+    fun `induction2`(@ForAll @Positive i: Int, @ForAll @Positive j: Int) {
+        val k = i + j
+
+        // adding an element to a list should increase its size
+        assertThat(k).isGreaterThanOrEqualTo(i)
+    }
+
+    @Property
     fun `blackbox testing`(@ForAll a: Int, @ForAll b: Int) {
         val calc1 = Calculator()
         calc1.add(b)

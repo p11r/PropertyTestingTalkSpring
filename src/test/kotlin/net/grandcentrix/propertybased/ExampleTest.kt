@@ -5,9 +5,6 @@ import assertk.assertions.containsAtLeast
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThan
 import assertk.assertions.isGreaterThanOrEqualTo
-import com.fasterxml.jackson.databind.ObjectMapper
-import net.grandcentrix.propertybased.device.DeviceDto
-import net.jqwik.api.Disabled
 import net.jqwik.api.ForAll
 import net.jqwik.api.Property
 import net.jqwik.api.constraints.AlphaChars
@@ -16,9 +13,9 @@ import net.jqwik.api.constraints.Size
 
 class ExampleTest {
     @Property
-    @Disabled
+    //@Disabled
     fun `reversing keeps all elements`(@ForAll list: List<Int>) {
-        assertThat(list.reversed()).containsAtLeast(list)
+        assertThat(list.reversed()).containsAtLeast(*list.toTypedArray())
     }
 
     @Property
@@ -34,26 +31,26 @@ class ExampleTest {
     }
 
     @Property
-    @Disabled
+    //@Disabled
     fun `test square`(@ForAll @Positive a: Int) {
         val result = a * a
         assertThat(result).isGreaterThanOrEqualTo(a)
     }
 
     @Property
-    @Disabled
+    //@Disabled
     fun `string should be shrunk to AA`(@ForAll @AlphaChars aString: String?): Boolean {
         return aString!!.length > 5 || aString.length < 3
     }
 
     @Property
-    @Disabled
+    //@Disabled
     fun `abs value for all ints is positive`(@ForAll i: Int): Boolean {
         return Math.abs(i) >= 0;
     }
 
     @Property
-    @Disabled
+    //@Disabled
     fun `length of concatenated string is greater than length of each`(
         @ForAll string1: String, @ForAll string2: String
     ) {
