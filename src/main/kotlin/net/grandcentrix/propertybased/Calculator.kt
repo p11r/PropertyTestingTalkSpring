@@ -7,6 +7,10 @@ class Calculator {
         this.result += x
     }
 
+    fun mul(x: Int) {
+        this.result *= x
+    }
+
     fun div(x: Int) {
         this.result /= x
     }

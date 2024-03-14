@@ -60,9 +60,17 @@ class PropertyTest {
         assertThat(clone.size).isGreaterThan(list.size)
     }
 
-    @Test
-    fun `blackbox testing`() {
+    fun `blackbox testing`(@ForAll a: Int, @ForAll b: Int) {
+        val calc1 = Calculator()
+        calc1.add(b)
+        calc1.mul(a)
+
+        val calc2 = Calculator()
+        calc2.add(a)
+        calc2.mul(b)
+
         // hard to prove, easy to verify
+        assertThat(calc1.result).isEqualTo((calc2).result)
     }
 
     @Test
